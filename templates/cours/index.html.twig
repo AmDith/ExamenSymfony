@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %} {% block main %}
+<div class="custom-class">
+  <div class="border rounded-lg shadow-lg border px-4">
+    <div class="bg-gray-100 px-4 py-2 font-semibold text-lg">
+      Liste de cours
+    </div>
+    <div class="p-4">
+      <div class="flex justify-end mb-2 px-2">
+        <a
+          href="{{ path('clients.store') }}"
+          role="button"
+          class="border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white font-semibold py-2 px-4 rounded"
+        >
+          Create
+        </a>
+      </div>
+      <div class="flex justify-end mb-2 px-2">
+        <a
+          href="{{ path('clients.searchClientByTelephone2') }}"
+          role="button"
+          class="border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white font-semibold py-2 px-4 rounded"
+        >
+          Info client
+        </a>
+      </div>
+      <div class="search mb-2 flex mt-4 lg:mt-0">
+        {{ form_start(formSearch) }}{#
+        <form>
+          #}
+          <div class="mb-2 text-red-500">
+            {{ form_errors(formSearch.prof) }}
+          </div>
+          <div class="flex mt-4 lg:mt-0">
+            {{ form_widget(formSearch.prof, {
+                'attr': {
+                    'class' : 'form-input block w-full lg:w-auto px-4 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none',
+                }
+            }) }}
+            {{ form_widget(formSearch.Search) }}
+          </div>
+
+          {{ form_end(formSearch) }}{#
+        </form>
+        #}
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-300">
+          <thead>
+            <tr class="bg-gray-200">
+              <th class="border px-4 py-2 text-left">#</th>
+              <th class="border px-4 py-2 text-left">Nom</th>
+              <th class="border px-4 py-2 text-left">Prenom</th>
+              <th class="border px-4 py-2 text-left">Surname</th>
+              <th class="border px-4 py-2 text-left">Telephone</th>
+              <th class="border px-4 py-2 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if clients is iterable %} {% for client in clients %}
+            <tr>
+              <td class="border px-4 py-5">{{ client.id }}</td>
+              <td class="border px-4 py-5">
+                {{ client.userId ? client.userId.nom : "#" }}
+              </td>
+              <td class="border px-4 py-5">
+                {{ client.userId ? client.userId.prenom : "#" }}
+              </td>
+              <td class="border px-4 py-5">{{ client.Surname }}</td>
+              <td class="border px-4 py-5">{{ client.telephone }}</td>
+              <td class="border px-4 py-5 text-center space-x-2">
+                <a
+                  href="{{ path('dettes.index', { clientId: client.id }) }}"
+                  role="button"
+                  class="border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white font-semibold py-2 px-4 rounded"
+                  >Dettes</a
+                >
+                <a
+                  href="#"
+                  role="button"
+                  class="border border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold py-2 px-4 rounded"
+                  >Delete</a
+                >
+              </td>
+            </tr>
+            {% endfor %} {% elseif clients is not empty %}
+            <tr>
+              <td class="border px-4 py-5">{{ clients.id }}</td>
+              <td class="border px-4 py-5">
+                {{ clients.userId ? clients.userId.nom : "#" }}
+              </td>
+              <td class="border px-4 py-5">
+                {{ clients.userId ? clients.userId.prenom : "#" }}
+              </td>
+              <td class="border px-4 py-5">{{ clients.Surname }}</td>
+              <td class="border px-4 py-5">{{ clients.telephone }}</td>
+              <td class="border px-4 py-5 text-center space-x-2">
+                <a
+                  href="{{ path('dettes.index', { clientId: client.id }) }}"
+                  role="button"
+                  class="border border-gray-800 text-gray-800 hover:bg-gray-800 hover:text-white font-semibold py-2 px-4 rounded"
+                  >Dettes</a
+                >
+                <a
+                  href="#"
+                  role="button"
+                  class="border border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold py-2 px-4 rounded"
+                  >Delete</a
+                >
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="border px-4 py-5 text-center">
+                Aucun client trouvé.
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+      <nav aria-label="Page navigation" class="flex justify-end mt-4">
+        <ul class="flex space-x-2">
+          <li>
+            <a
+              class="px-3 py-1 text-gray-500 bg-gray-200 rounded-md hover:bg-gray-300 disabled:opacity-50"
+              href="{% if page > 1 %}?page={{ page - 1 }}{% else %}#{% endif %}"
+              aria-label="Previous"
+              aria-disabled="true"
+            >
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          {% for i in 1..maxPage %}
+          <li>
+            {% if maxPage == 1 %}
+            <a
+              class="px-3 py-1 {{
+                1 == page ? 'text-white bg-blue-600' : 'bg-white-600'
+              }} rounded-md"
+              href="?page={{ i }}"
+              aria-current="page"
+              >{{ i }}</a
+            >
+            {% else %}
+
+            <a
+              class="px-3 py-1 {{
+                i == page ? 'text-white bg-blue-600' : 'bg-white-600'
+              }} rounded-md"
+              href="?page={{ i }}"
+              aria-current="page"
+              >{{ i }}</a
+            >
+            {% endif %}
+          </li>
+          {% endfor %}
+          <li>
+            <a
+              class="px-3 py-1 text-gray-500 bg-gray-200 rounded-md hover:bg-gray-300"
+              href="{% if page < maxPage %}?page={{
+                page + 1
+              }}{% else %}#{% endif %}"
+              aria-label="Next"
+            >
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% endblock %}
